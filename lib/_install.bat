@@ -1,0 +1,2 @@
+call mvn install:install-file -Dfile=arduino.jar -DgeneratePom=true -DgroupId=arduino -DartifactId=arduino -Dversion=1 -Dpackaging=jar
+call mvn install:install-file -Dfile=jSerialComm-1.3.11.jar -DgeneratePom=true -DgroupId=com.fazecast -DartifactId=jSerialComm -Dversion=1 -Dpackaging=jar
