@@ -2,7 +2,11 @@ package com.del.flc.view;
 
 
 import com.del.flc.ColorMusic;
-import com.del.flc.rxtx.*;
+import com.del.flc.rxtx.Connection;
+import com.del.flc.rxtx.ConnectionEvent;
+import com.del.flc.rxtx.ConnectionListener;
+import com.del.flc.rxtx.ConnectionManager2;
+import com.del.flc.utils.Configure;
 import com.del.flc.utils.Logger;
 import com.del.flc.utils.Utils;
 
@@ -58,7 +62,7 @@ public class MainFrame extends JFrame implements ConnectionListener, Logger {
         JMenu menuFile = new JMenu("Файл");
         menuBar.add(menuFile);
         JMenuItem menuItemRestart = new JMenuItem("Рестарт");
-        menuItemRestart.addActionListener( e -> connectionManager.reset());
+        menuItemRestart.addActionListener(e -> connectionManager.reset());
         JMenuItem menuItemExit = new JMenuItem("Выход");
         menuItemExit.addActionListener(arg0 -> dispatchEvent(new WindowEvent(MainFrame.this, WindowEvent.WINDOW_CLOSING)));
         menuFile.add(new JSeparator());

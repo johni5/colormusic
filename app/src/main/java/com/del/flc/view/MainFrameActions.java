@@ -1,5 +1,6 @@
 package com.del.flc.view;
 
+import com.del.flc.utils.Configure;
 import com.del.flc.utils.SystemEnv;
 import com.del.flc.utils.Utils;
 import org.apache.log4j.Logger;
@@ -25,6 +26,11 @@ public class MainFrameActions implements WindowListener {
         for (SystemEnv value : SystemEnv.values()) {
             logger.info("\t\t" + value.getName() + "=" + value.read());
         }
+        try {
+            Configure.getInstance().load();
+        } catch (Exception e1) {
+            logger.error("Open error", e1);
+        }
         logger.info("... success.");
     }
 
@@ -33,8 +39,9 @@ public class MainFrameActions implements WindowListener {
         logger.info("================================= WINDOW CLOSING =================================");
         try {
             rxtx.close();
+            Configure.getInstance().save();
         } catch (Exception e1) {
-            logger.error("RxTx close error", e1);
+            logger.error("Close error", e1);
         }
         System.exit(0);
     }

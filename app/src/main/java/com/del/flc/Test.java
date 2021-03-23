@@ -1,26 +1,32 @@
 package com.del.flc;
 
 
+import com.del.flc.utils.Configure;
 import com.del.flc.utils.StringUtil;
+import com.fazecast.jSerialComm.SerialPort;
 
 import java.util.Arrays;
-import java.util.Objects;
-import java.util.StringTokenizer;
 
 public class Test {
 
     public static void main(String[] args) {
 
 //        byte[] c = new byte[]{58, 50, 32, 49, 59, 51, 32, 49, 59, 50, 32, 56, 59, 51, 32, 49, 13, 10, 58, 50, 32, 56, 59, 51, 32, 49, 13, 10};
-        String data = "{6|2|0|18.00|1.00|535|130|10.00|17|0.24|0.51|94|12|14|-4|29|160|29|200|1}\n\r";
-        data = data.trim();
-        if (data.startsWith("{") && data.endsWith("}")) {
-            data = data.substring(1, data.length() - 1);
-            StringTokenizer st = new StringTokenizer(data, "|");
-            while (st.hasMoreTokens()) {
-                System.out.println("{" + st.nextToken() + "}");
-            }
+        SerialPort[] commPorts = SerialPort.getCommPorts();
+//        String oldPortName = "COM8";
+//        if (!StringUtil.isTrimmedEmpty(oldPortName)) {
+//            Arrays.sort(commPorts, (o1, o2) -> {
+//                String n1 = o1.getSystemPortName();
+//                String n2 = o2.getSystemPortName();
+//                if (n1.equals(oldPortName)) return -1;
+//                if (n2.equals(oldPortName)) return 1;
+//                return n2.compareTo(n1);
+//            });
+//        }
+        for (SerialPort commPort : commPorts) {
+            System.out.println(commPort.getSystemPortName());
         }
+
 
 
 /*

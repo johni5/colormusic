@@ -1,5 +1,6 @@
 package com.del.flc.rxtx;
 
+import com.del.flc.utils.Configure;
 import com.del.flc.utils.Logger;
 import com.del.flc.utils.MyExecutors;
 import com.del.flc.utils.StringUtil;
@@ -86,13 +87,25 @@ public class ConnectionManager2 implements Runnable, Connection {
         listener.connectionChangeState(new ConnectionEvent(ConnectionEvent.Events.READY));
         while (work.get()) {
             if (serialPort == null) {
-                for (SerialPort sp : SerialPort.getCommPorts()) {
+                SerialPort[] commPorts = SerialPort.getCommPorts();
+                String oldPortName = Configure.getInstance().getPortName();
+                if (!StringUtil.isTrimmedEmpty(oldPortName)) {
+                    Arrays.sort(commPorts, (o1, o2) -> {
+                        String n1 = o1.getSystemPortName();
+                        String n2 = o2.getSystemPortName();
+                        if (n1.equals(oldPortName)) return -1;
+                        if (n2.equals(oldPortName)) return 1;
+                        return n1.compareTo(n2);
+                    });
+                }
+                for (SerialPort sp : commPorts) {
                     String portName = sp.getSystemPortName();
                     if (denyPorts.contains(portName)) continue;
                     info("Попытка соединения с " + portName);
                     serialPort = MyExecutors.getInstance().safeGet(10, TimeUnit.SECONDS, () -> {
                         try {
-                            if (!sp.isOpen() && sp.openPort()) {
+                            Thread.sleep(50);
+                            if (sp.openPort()) {
                                 sp.setBaudRate(9600);
                                 sp.setNumDataBits(8);
                                 sp.setNumStopBits(SerialPort.ONE_STOP_BIT);
@@ -126,6 +139,8 @@ public class ConnectionManager2 implements Runnable, Connection {
                                         return sp;
                                     }
                                 }
+                            } else {
+                                error("Не могу открыть порт");
                             }
                             Thread.sleep(100);
                         } catch (Exception e) {
@@ -134,7 +149,10 @@ public class ConnectionManager2 implements Runnable, Connection {
                         return null;
                     });
                     if (serialPort == null) denyPorts.add(portName);
-                    else break;
+                    else {
+                        Configure.getInstance().setPortName(portName);
+                        break;
+                    }
                 }
             }
             if (serialPort != null && serialPort.isOpen()) {
